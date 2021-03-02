@@ -65,13 +65,23 @@ function jb_send_sms_using_api($mobile = null, $message, $sender = 'Meroshringar
         'message' => $message,
     ];
 
-    $ch = curl_init();
-    curl_setopt($ch, CURLOPT_URL, $url);
-    curl_setopt($ch, CURLOPT_POST, 1);
-    curl_setopt($ch, CURLOPT_POSTFIELDS, $content);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-    $server_output = curl_exec($ch);
-    curl_close($ch);
-
-    return $server_output;
+    $body = array(
+        'auth_token'    => $token,
+        'to'   => $mobile,
+        'text' => $message, 
+    );
+    
+    $args = array(
+        'body'        => $body,
+        'timeout'     => '5',
+        'redirection' => '5',
+        'httpversion' => '1.0',
+        'blocking'    => true,
+        'headers'     => array(),
+        'cookies'     => array(),
+    );
+    
+    $response = wp_remote_post( $url, $args );
+    
+    return $response;
 }
